@@ -1,0 +1,16 @@
+MOV i,AX;
+MOV a,AX;
+MOV b,AX;
+MOV AX,a;
+CMP AX,i;
+LT SI1:
+JMP SALIR1;
+MOV AX,a;
+ADD AX,b;
+MOV AX,T1;
+MOV AX,x;
+ADD AX,a;
+MOV AX,T1;
+JMP SALIR1;
+SALIR1:
+exit;

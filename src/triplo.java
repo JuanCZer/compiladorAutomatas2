@@ -577,6 +577,7 @@ public class triplo {
 	    
 	    String aux = "";
 	    int contador = 1;
+	    boolean salta = false;
 	    
 	    // Se itera el for por cada linea de la tabla de triplos
 	    for(int i=0;i<Dato_Origen.size();i++){
@@ -590,10 +591,20 @@ public class triplo {
 	    	switch (tipoOperador) {
 	    	
 	    	case "=":
-                if (Pattern.compile("[0-9]+").matcher(datoFuente).matches())
+	    	
+	    		if(salta) {
+	    			lineaEnsamblador += "SI" + contador + ": MOV AX," + datoFuente + ";" + "\n";
                 	lineaEnsamblador += "MOV " + datoOrigen + ",AX;";
-                else
-                	lineaEnsamblador += ("MOV AX," + datoFuente + ";");
+                	salta = false;
+	    		} else {
+	    			if (Pattern.compile("[T][0-9]+").matcher(datoFuente).matches()) {
+	    				lineaEnsamblador += "MOV " + datoOrigen + ",AX;";
+	    			}
+	    			else {
+	    				lineaEnsamblador += "MOV AX," + datoFuente + ";" + "\n";
+	    				lineaEnsamblador += "MOV " + datoOrigen + ",AX;";
+	    			}
+	    		}
                 break;
 	    	
 			case "+":
@@ -638,10 +649,9 @@ public class triplo {
                 break;
                 
             case "JMP":
-            	lineaEnsamblador += "JMP SALIR" + contador + ";\n";
-            	lineaEnsamblador += "SALIR" + contador + ":" + "\n";
-            	lineaEnsamblador += "exit;";
             	contador++;
+            	lineaEnsamblador += "JMP SALIR" + contador + ";\n";
+            	lineaEnsamblador += "SALIR" + (contador - 1) + ":";
                 break;
 
 			default:
@@ -651,10 +661,11 @@ public class triplo {
 	    	
 
 	    	if (!aux.equals("")) {
-                lineaEnsamblador += "CMP AX," + datoFuente + ";" + "\n";
+                lineaEnsamblador += "CMP " + datoOrigen + "," + datoFuente + ";" + "\n";
                 lineaEnsamblador += aux + " SI" + contador + ":" + "\n";
                 lineaEnsamblador += "JMP SALIR" + contador + ";";
                 aux = "";
+                salta = true;
             }
 	    	
 	    	if(!lineaEnsamblador.equals("")) {
@@ -662,6 +673,9 @@ public class triplo {
 	    	}
 	         
 	    }
+	    
+	    txt.println("SALIR" + contador + ":");
+	    txt.println("EXIT;");
 	    txt.close();
 	}
 	

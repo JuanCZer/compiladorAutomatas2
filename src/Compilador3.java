@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ public class Compilador3  {
     static int contadorPR = 1;
     static int valorI ;
     static int errsem = 1;
+    static String tokensOrdenados = "";
     
     static String nuevaPalabra = "";
     public static void main(String[] args) {
@@ -169,6 +171,13 @@ public class Compilador3  {
         imprimir(); //Codigo para mostrar la tabla de simbolos
         buscarError();
         ErrorNoDefinida();
+        imprimirTokens();
+        try {
+			crearArchivoTxt();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     public static int buscarEnPalabrasReservadas(String dato, String palabras) {
     	if(dato.equals("string")) {
@@ -607,5 +616,46 @@ errsem++;
             
             
         }
+    }
+    
+    public static void imprimirTokens() {
+        System.out.println();
+        System.out.println("TOKENS"); //imprimimos el diseño de lo que sera la tabla de simbolos
+        System.out.println("" +
+                "************************");	//seran los espacios que delimitan las columnas
+        Iterator<String> nombreIterator = lexema.iterator();	//codigo para poder recorrer las listas
+        Iterator<String> nombreIterator2 = token.iterator();
+        Iterator<String> nombreIterator3 = tipo.iterator();
+        boolean igual = false;
+        boolean terminal = false;
+        while(nombreIterator.hasNext()){	//se recorren las listas
+            String elemento = nombreIterator.next();
+            String elemento2 = nombreIterator2.next();
+            String elemento3 = nombreIterator3.next();
+            if(!elemento2.substring(0, 3).equals("ESP")) {
+
+                Iterator<String> noRepetir = token1.iterator();
+                Iterator<String> noRepetir2 = lexema1.iterator();
+                while(noRepetir2.hasNext()){
+                    String p = noRepetir.next();
+                    String f = noRepetir2.next();
+                    if(f.equals(elemento)) {
+                        System.out.print(p + " ");
+                        tokensOrdenados += (p + " ");
+                    }
+                }
+                if(elemento.equals(";") || elemento.equals("{")) {
+                    System.out.print("\n");
+                    tokensOrdenados += "\n";
+                }
+            }
+
+        }
+    }
+
+    public static void crearArchivoTxt() throws IOException {
+        FileWriter writer = new FileWriter("src/tokens.txt", false);
+        writer.write(tokensOrdenados);
+        writer.close();
     }
 }

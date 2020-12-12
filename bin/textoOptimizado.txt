@@ -1,7 +1,8 @@
-int i = 9;
-int a = 7;
-int b = 2;
-if (a < i) {
-x = a + b;
-m = x +a;
+int i = 1+2;
+int a = 10;
+int x = 8;
+if (x > i) {
+a = a + 4;
+} else {
+m = 3;
 }
